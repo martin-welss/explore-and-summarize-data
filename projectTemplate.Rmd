@@ -178,12 +178,12 @@ ggplot(aes(x=pH, y=fixed.acidity), data=wine) +
 
 Since we want to find the correlations between quality and the rest of the
 variables, I created some scatterplots and tested the correlation between
-promising quality-varibale combinations. I had to deal with overplotting
-by adding transperency to the points. Furthermore I added in some plots a geom_smooth layer based on a linear model to see the correlation more clearly.
+promising quality-variable combinations. I had to deal with overplotting
+by adding transparency to the points. Furthermore I added in some plots a geom_smooth layer based on a linear model to see the correlation more clearly.
 
 Because I could not find any convincing relation, I tried transformations
-of variables like the square fixed.acidiy, the square root of pH and
-introduced a new varibale prop.acidity followed by corresponding plots.
+of variables like the square fixed.acidity, the square root of pH and
+introduced a new variable prop.acidity followed by corresponding plots.
 But still no strong correlation could be found.
 
 So I decided to test the some correlations numerically, but there is
@@ -277,9 +277,9 @@ cor.test(wine$quality, wine$qmix)
 
 To get a better impression of the relationship between quality and the
 other variables, I needed quality to be a factor. So I created a new
-factor varibale from quality and used in the scatterplots to color
+factor variable from quality and used in the scatterplots to color
 the points. Overplotting was again to be dealt with. But there was
-no matchwinner revealed. I than created a new variable that was
+no match winner revealed. I than created a new variable that was
 the product of three other variables that so far showed at least
 a little correlation with quality:
 
@@ -334,7 +334,7 @@ ggplot(aes(x=quality, y=alcohol), data=wine) +
 ```
 
 ### Description Two
-The second plot is a scatterplot which shows clearly a linear correlation between qulity and alcohol with the red line depicting the correlation. This supports the assumption that higher levels of alcohol correspond with higher quality. The plot also shows that the vast majority of vines have mediocre quality and only very few have the top level quality of 9 or a bad quality below 4.
+The second plot is a scatterplot which shows clearly a linear correlation between quality and alcohol with the red line depicting the correlation. This supports the assumption that higher levels of alcohol correspond with higher quality. The plot also shows that the vast majority of vines have mediocre quality and only very few have the top level quality of 9 or a bad quality below 4.
 
 ### Plot Three
 ```{r echo=FALSE, Plot_Three}
@@ -354,7 +354,7 @@ Plot three finally shows a scatterplot of alcohol by total sulfur dioxide colore
 the key characteristics of my analysis:
 
 1. alcohol and quality correlate
-2. total sulfur dioxide correlate 
+2. total sulfur dioxide and quality correlate 
 3. the colors of quality in the plot support that
 
 We see the lighter colors of better quality in the upper areas, especially
@@ -364,21 +364,21 @@ the purple points of high quality.
 
 # Reflection
 
-I started off with histograms of the varibales to get an overview of the
-disstributions. Alcohol seemed most promising, so I wanted to create a 
-boxplot. For that I needed alcohol to be factor varibale, so I used the
-cut function to create the alcohol.bucket varibale. The boxplot then
+I started off with histograms of the variables to get an overview of the
+distributions. Alcohol seemed most promising, so I wanted to create a 
+boxplot. For that I needed alcohol to be a factor variable, so I used the
+cut function to create the alcohol.bucket variable. The boxplot then
 supported the relationship between alcohol and quality.
 
 The bivariate analysis was somewhat sobering because no strong correlation
 could be found.To avoid overseeing a correlation I added to some of the plots a linear model smoother but no correlation was stronger than between
 alcohol and quality. Some slight correlation was found between sulfur dioxide, acidity and pH on the one hand and quality on the other hand.
-I created a new varable and tried transformations and combinations of the
+I created a new variable and tried transformations and combinations of the
 input variables.
 
-The trend continued in the multivariate analysis. First I needed quality to be a factor, so I created a new variable for that. Then I used this factor
+The trend continued in the multivariate analysis.First I needed quality to be a factor, so I created a new variable for that. Then I used this factor
 variable to color some of the scatter plots. I finally created another
-varibale the was the multiplication of alcohol, total.sulfur.dioxide and
+variable the was the multiplication of alcohol, total.sulfur.dioxide and
 fixed.acidity. But no strong correlation surfaced.
 
 ## Conclusion
@@ -388,7 +388,7 @@ of the other variables. I am pretty sure after my analysis, that there
 is at least no linear relationship. It could be a higher order 
 relationship like exponential or polynomial, but I did not find any hints for that.
 So from my analysis I would conclude that there must exist other variables
-that correlate with quality of wine that were not in the dataset like the type of grape, geographical region, name of the vineyard or vintage. It would be most interesting to have those varibales added to the dataset for
+that correlate with quality of wine that were not in the dataset like the type of grape, geographical region, name of the vineyard or vintage. It would be most interesting to have those variables added to the dataset for
 a future analysis.
 
 If I were a winemaker, I would probably be more interested in the
