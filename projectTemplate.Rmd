@@ -1,6 +1,10 @@
 Exploratory Data Analysis with R by Martin Welss
 ========================================================
 
+In this analysis I explore a dataset of white wine. Each observation contains a set
+of objective, mostly chemical tests and quality variable which is based on sensory
+data (median of at least 3 evaluations made by wine experts).
+
 ```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
 # Load all of the packages that you end up using
 # in your analysis in this code chunk.
@@ -179,7 +183,7 @@ ggplot(aes(x=pH, y=fixed.acidity), data=wine) +
 Since we want to find the correlations between quality and the rest of the
 variables, I created some scatterplots and tested the correlation between
 promising quality-variable combinations. I had to deal with overplotting
-by adding transparency to the points. Furthermore I added in some plots a geom_smooth layer based on a linear model to see the correlation more clearly.
+by adding transparency to the points. I carefully selected the alpha value so that the points of high quality observations are still visible. Furthermore I added in some plots a geom_smooth layer based on a linear model to see the correlation more clearly.
 
 Because I could not find any convincing relation, I tried transformations
 of variables like the square fixed.acidity, the square root of pH and
@@ -278,7 +282,7 @@ cor.test(wine$quality, wine$qmix)
 To get a better impression of the relationship between quality and the
 other variables, I needed quality to be a factor. So I created a new
 factor variable from quality and used in the scatterplots to color
-the points. Overplotting was again to be dealt with. But there was
+the points. Overplotting was again to be dealt with and again I selected the alpha value so that the colors of the high and low quality oberservations stay visible. But there was
 no match winner revealed. I than created a new variable that was
 the product of three other variables that so far showed at least
 a little correlation with quality:
@@ -319,7 +323,7 @@ Sine quality is the output variable that we try to predict from the other
 variables, I present as first plot the quality distribution faceted by
 alcohol, which so far has the strongest correlation with quality. We see
 that the first two subplots with the low levels of alcohol have their maximum at quality 5 whereas  the following plots, the maximum moves to
-higher quality levels.
+higher quality levels. I think this plot is important and quite interesting, because it gives a good impression of the relation between the quality and alcohol which is its strongest correlation. Very few wines have excellent quality and so have only a few wines a bad quality.
 
 ### Plot Two
 ```{r echo=FALSE, Plot_Two}
