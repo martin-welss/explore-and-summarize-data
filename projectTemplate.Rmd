@@ -16,11 +16,13 @@ data (median of at least 3 evaluations made by wine experts).
 library(ggplot2)
 ```
 
+First, we load the dataset from the csv-file and 
+get some statistical info about the dataset.
+
+
 ```{r echo=FALSE, Load_the_Data}
-# Load the Data from csv
 wine <- read.csv("wineQualityWhites.csv")
 
-# get some statistical info about the dataset
 names(wine)
 str(wine)
 summary(wine)
@@ -29,17 +31,19 @@ summary(wine)
 ```
 
 # Univariate Plots Section
+
+Quality is of course of primary interest because it 
+is the variable we want to predict from the others,
+so we look at its histogram first.
+
 ```{r echo=FALSE, Univariate_Plots}
-
-# what are the distributions?
-# let's do some histograms
-
-# quality is of of course the variable we want
-# to predict from the others
 ggplot(aes(x = quality), data = wine) + 
   geom_histogram()
 
-# now the potential "input" variables
+```
+
+Now the histograms of the potential "input" variables:
+```{r echo=FALSE}
 ggplot(aes(x = fixed.acidity), data = wine) + 
   geom_histogram()
 
@@ -61,22 +65,42 @@ ggplot(aes(x = sulphates), data = wine) +
 ggplot(aes(x = alcohol), data = wine) + 
   geom_histogram()
 
-# get better impression of distribution with frequnecy polygons
+```
+
+
+I think we can get a better impression of the quality distribution 
+with frequency polygons:
+
+
+```{r echo=FALSE}
+
 ggplot(aes(x = quality, y = ..count../sum(..count..)), data = wine) +
   geom_freqpoly() + 
   xlab('Quality') + 
   ylab('Percentage of observations with that quality')
 
 ```
+
+
+The distributions of alcohol and quality resemble slightly 
+so alcohol seems to be the best lead. We transform it to be a factor 
+and remove the observations where alcohol.bucket is NA to get cleaner plots.
+I want to get a more detailed impression of alcohol.bucket, so I plot a
+histogram and a boxplot.
+
+
 ```{r}
 
-# alcohol seems the best lead, transform it to be a factor
+
 wine$alcohol.bucket <- cut(wine$alcohol, c(8,9,10,11,12,13,14))
+
+wine <- subset(wine, !is.na(wine$alcohol.bucket))
+
 
 ```
 ```{r echo=FALSE}
 
-# and plot it as histogram
+# plot it as histogram
 ggplot(aes(x = alcohol.bucket), data = wine) + 
   geom_histogram()
 
@@ -97,22 +121,26 @@ The main feature of interest in the dataset is quality and how to predict it fro
 
 ### What other features in the dataset do you think will help support your investigation into your feature(s) of interest?
 From the plots we see that the quality resembles a normal distribution. So
-we need to check the correlation between quality and the other variables.
+we need to check the correlation between quality and the other variables. From
+the alcohol-quality boxplot we can see a trend that Quality increases with more alcohol, but the correlation does not convince me yet, this needs more investigation in the
+following sections.
 
 ### Did you create any new variables from existing variables in the dataset?
 Yes, I created alcohol.bucket variable to get a feeling for the 
-distributions of quality by alcohol and created also a corresponding boxplot. Quality seems to increase with more alcohol, but the correlation does not convince me, so this might be a dead end.
+distributions of quality by alcohol and created also a corresponding boxplot. 
 
 ### Of the features you investigated, were there any unusual distributions? Did you perform any operations on the data to tidy, adjust, or change the form of the data? If so, why did you do this?
 The residual.sugar has a quite asymmetric distribution, the pH variable's distribution has two peaks. Other than adding the alcohol.bucket variable, 
-I did no further adjustments. I needed the alcohol.bucket variable to create a boxplot of quality by alcohol. 
+I needed the alcohol.bucket variable to create a boxplot of quality by alcohol and removed the records where alcohol.bucket was NA. 
 
 
 
 # Bivariate Plots Section
+
+To start, let's create some scatterplots to find interesting correlations...
+ 
 ```{r echo=FALSE, Bivariate_Plots}
 
-# let's create some scatterplots to find correlations...
 ggplot(aes(x=quality, y=total.sulfur.dioxide), data=wine) + 
   geom_point(alpha=1/6)
 
@@ -122,14 +150,24 @@ ggplot(aes(x=quality, y=fixed.acidity), data=wine) +
 ggplot(aes(x=quality, y=fixed.acidity*fixed.acidity), data=wine) + 
   geom_point(alpha=1/6)+ylim(c(0,120))
 
-# no winner so far, maybe a linear model layer  helps
+```
 
+No winner so far, maybe a linear model layer helps
+
+```{r}
 ggplot(aes(x=quality, y=alcohol), data=wine) + 
   geom_point(alpha=1/6) +
   geom_smooth(method='lm', color='red')
 
-# is the correlation of higher order?
-# try transformed variables
+```
+
+Well, that looks promising let's keep the pair alcohol and quality in mind. 
+
+Are there correlations of higher order?
+Let's try transformed variables.
+
+
+```{r echo=FALSE}
 
 ggplot(aes(x=quality, y=sqrt(pH)), data=wine) + 
   geom_point(alpha=1/6)+
@@ -141,22 +179,29 @@ ggplot(aes(x=quality, y=fixed.acidity*total.sulfur.dioxide), data=wine) +
   ylim(c(0,2000))
 
 ```
+
+I create a new variable prop.acidity to combine acidity-types and plot it. 
+
 ```{r}
 
-# create a new variable to combine acidity-types 
 wine$prop.acidity <- wine$fixed.acidity / wine$volatile.acidity
 
 ```
 ```{r echo=FALSE}
 
 
-# and plot it
 ggplot(aes(x=quality, y=prop.acidity), data=wine) + 
   geom_point(alpha=1/8)+
   geom_smooth(method='lm', color='red')+
   ylim(c(0,75))
 
-# what about correlations among the other variables?
+```
+
+What about correlations between the other variables?
+
+```{r echo=FALSE}
+
+
 ggplot(aes(x=alcohol, y=fixed.acidity), data=wine) +
   geom_point()
   
@@ -167,14 +212,21 @@ ggplot(aes(x=volatile.acidity, y=fixed.acidity), data=wine) +
 ggplot(aes(x=pH, y=alcohol), data=wine) +
   geom_point()
 
+```
 
-# we should at least here see a correlation
+We should at least here see a correlation between pH and acidity because
+of the chemical definition of pH.
+
+```{r echo=FALSE}
+
 ggplot(aes(x=pH, y=fixed.acidity), data=wine) +
   geom_point() +
   geom_smooth(method='lm', color='red')
 
 
 ```
+
+We don't get disappointed but that does not help for the prediction of quality.
 
 # Bivariate Analysis
 
@@ -219,6 +271,9 @@ a reliable prediction.
 
 # Multivariate Plots Section
 
+We start with the strongest lead alcohol and quality but this time 
+faceted by the different levels of alcohol using the alcohol.bucket variable. 
+
 ```{r echo=FALSE, Multivariate_Plots}
 
 # one more try with quality by alcohol
@@ -227,20 +282,28 @@ ggplot(aes(x=quality), data=wine)+
   facet_wrap(~alcohol.bucket)
 
 ```
+
+I think I need quality to be a factor, so create it
+
 ```{r}
 
-# I need quality to be a factor, so create it
 wine$quality.factor <- factor(wine$quality)
 
 ```
+
+I use jitter to get a better color impression.
+
 ```{r echo=FALSE}
 
 
-# use jitter to get a better color impression
 ggplot(aes(x = pH, y = alcohol), data = wine) + 
   geom_jitter(aes(color = quality.factor))
 
-# pH seems dead end, trying other variables
+```
+
+pH seems to be a dead end, let's try other variables.
+
+```{r echo=FALSE}
 ggplot(aes(x = fixed.acidity, y = alcohol), data = wine) + 
   geom_jitter(aes(color = quality.factor))
 
@@ -250,9 +313,11 @@ ggplot(aes(x = total.sulfur.dioxide, y = alcohol), data = wine) +
 
 
 ```
+
+We compute a new variable of promising candidates and create a corresponding plot.
+
 ```{r}
 
-# compute a new variable of promising candidates
 wine$qmix <- wine$alcohol* 
   wine$total.sulfur.dioxide * 
   wine$fixed.acidity
@@ -261,19 +326,20 @@ wine$qmix <- wine$alcohol*
 ```{r echo=FALSE}
 
 
-# and create the plot
 ggplot(aes(x=quality, y=qmix), data=wine) + 
   geom_point(alpha=1/8)+
   geom_smooth(method='lm', color='red')
 
 ```
+
+Finally we test the correlation, but still not better than alcohol. 
+
 ```{r}
 
-# and correlation test
 cor.test(wine$quality, wine$qmix)
 
-
 ```
+
 
 # Multivariate Analysis
 
@@ -282,7 +348,7 @@ cor.test(wine$quality, wine$qmix)
 To get a better impression of the relationship between quality and the
 other variables, I needed quality to be a factor. So I created a new
 factor variable from quality and used in the scatterplots to color
-the points. Overplotting was again to be dealt with and again I selected the alpha value so that the colors of the high and low quality oberservations stay visible. But there was
+the points. Overplotting was again to be dealt with and again I selected the alpha value so that the colors of the high and low quality observations stay visible. But there was
 no match winner revealed. I than created a new variable that was
 the product of three other variables that so far showed at least
 a little correlation with quality:
