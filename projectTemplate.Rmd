@@ -48,7 +48,8 @@ ggplot(aes(x = fixed.acidity), data = wine) +
   geom_histogram()
 
 ggplot(aes(x = residual.sugar), data = wine) + 
-  geom_histogram()
+  geom_histogram()+
+  scale_x_log10()
 
 ggplot(aes(x = total.sulfur.dioxide), data = wine) + 
   geom_histogram()
@@ -56,8 +57,8 @@ ggplot(aes(x = total.sulfur.dioxide), data = wine) +
 ggplot(aes(x = pH), data = wine) + 
   geom_histogram()
 
-ggplot(aes(x = density), data = wine) + 
-  geom_histogram()
+ggplot(aes(x = density), data = subset(wine, density<1.01)) + 
+  geom_histogram(binwidth=0.001)
 
 ggplot(aes(x = sulphates), data = wine) + 
   geom_histogram()
@@ -142,13 +143,13 @@ To start, let's create some scatterplots to find interesting correlations...
 ```{r echo=FALSE, Bivariate_Plots}
 
 ggplot(aes(x=quality, y=total.sulfur.dioxide), data=wine) + 
-  geom_point(alpha=1/6)
+  geom_jitter(alpha=1/6)
 
 ggplot(aes(x=quality, y=fixed.acidity), data=wine) + 
-  geom_point(alpha=1/6)
+  geom_jitter(alpha=1/6)
 
 ggplot(aes(x=quality, y=fixed.acidity*fixed.acidity), data=wine) + 
-  geom_point(alpha=1/6)+ylim(c(0,120))
+  geom_jitter(alpha=1/6)+ylim(c(0,120))
 
 ```
 
@@ -156,7 +157,7 @@ No winner so far, maybe a linear model layer helps
 
 ```{r}
 ggplot(aes(x=quality, y=alcohol), data=wine) + 
-  geom_point(alpha=1/6) +
+  geom_jitter(alpha=1/6) +
   geom_smooth(method='lm', color='red')
 
 ```
@@ -170,11 +171,11 @@ Let's try transformed variables.
 ```{r echo=FALSE}
 
 ggplot(aes(x=quality, y=sqrt(pH)), data=wine) + 
-  geom_point(alpha=1/6)+
+  geom_jitter(alpha=1/6)+
   geom_smooth(method='lm', color='red')
 
 ggplot(aes(x=quality, y=fixed.acidity*total.sulfur.dioxide), data=wine) + 
-  geom_point(alpha=1/10)+
+  geom_jitter(alpha=1/10)+
   geom_smooth(method='lm', color='red')+
   ylim(c(0,2000))
 
@@ -191,7 +192,7 @@ wine$prop.acidity <- wine$fixed.acidity / wine$volatile.acidity
 
 
 ggplot(aes(x=quality, y=prop.acidity), data=wine) + 
-  geom_point(alpha=1/8)+
+  geom_jitter(alpha=1/8)+
   geom_smooth(method='lm', color='red')+
   ylim(c(0,75))
 
@@ -203,14 +204,14 @@ What about correlations between the other variables?
 
 
 ggplot(aes(x=alcohol, y=fixed.acidity), data=wine) +
-  geom_point()
+  geom_jitter(alpha=1/8)
   
 ggplot(aes(x=volatile.acidity, y=fixed.acidity), data=wine) +
-  geom_point()
+  geom_jitter(alpha=1/8)
 
 
 ggplot(aes(x=pH, y=alcohol), data=wine) +
-  geom_point()
+  geom_jitter(alpha=1/8)
 
 ```
 
@@ -220,7 +221,7 @@ of the chemical definition of pH.
 ```{r echo=FALSE}
 
 ggplot(aes(x=pH, y=fixed.acidity), data=wine) +
-  geom_point() +
+  geom_jitter(alpha=1/8) +
   geom_smooth(method='lm', color='red')
 
 
