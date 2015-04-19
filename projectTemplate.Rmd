@@ -298,7 +298,8 @@ I use jitter to get a better color impression.
 
 
 ggplot(aes(x = pH, y = alcohol), data = wine) + 
-  geom_jitter(aes(color = quality.factor))
+  geom_point(aes(color = quality.factor))+
+  scale_color_brewer(type = "seq")
 
 ```
 
@@ -306,11 +307,13 @@ pH seems to be a dead end, let's try other variables.
 
 ```{r echo=FALSE}
 ggplot(aes(x = fixed.acidity, y = alcohol), data = wine) + 
-  geom_jitter(aes(color = quality.factor))
+  geom_point(aes(color = quality.factor))+
+  scale_color_brewer(type = "seq")
 
 
 ggplot(aes(x = total.sulfur.dioxide, y = alcohol), data = wine) + 
-  geom_jitter(aes(color = quality.factor))
+  geom_point(aes(color = quality.factor))+
+  scale_color_brewer(type = "seq")
 
 
 ```
@@ -411,7 +414,8 @@ The second plot is a scatterplot which shows clearly a linear correlation betwee
 ```{r echo=FALSE, Plot_Three}
 
 ggplot(aes(x = total.sulfur.dioxide, y = alcohol), data = wine) + 
-  geom_jitter(aes(color = quality.factor), alpha=1/2) +
+  geom_jitter(aes(color = quality.factor)) +
+  scale_color_brewer(type = "seq") +
   xlim(c(0,300)) +
   ggtitle("Scatterplot of alcohol by sulfur dioxide colored by quality")+
   xlab("total sulfur dioxide [mg / dm^3]")+
@@ -428,8 +432,8 @@ the key characteristics of my analysis:
 2. total sulfur dioxide and quality correlate 
 3. the colors of quality in the plot support that
 
-We see the lighter colors of better quality in the upper areas, especially
-the purple points of high quality.
+We see the darker colors of better quality in the upper areas, especially
+the navy points of high quality.
 
 ------
 
