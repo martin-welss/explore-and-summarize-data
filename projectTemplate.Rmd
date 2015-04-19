@@ -328,7 +328,7 @@ wine$qmix <- wine$alcohol*
 
 
 ggplot(aes(x=quality, y=qmix), data=wine) + 
-  geom_point(alpha=1/8)+
+  geom_jitter(alpha=1/8)+
   geom_smooth(method='lm', color='red')
 
 ```
@@ -396,7 +396,7 @@ higher quality levels. I think this plot is important and quite interesting, bec
 ```{r echo=FALSE, Plot_Two}
 
 ggplot(aes(x=quality, y=alcohol), data=wine) + 
-  geom_point(alpha=1/6, color="navy") +
+  geom_jitter(alpha=1/6, color="navy") +
   geom_smooth(method='lm', color='red')+
   ggtitle("Scatterplot of quality by alcohol with linear model")+
   ylab("alcohol [% by volume]")
