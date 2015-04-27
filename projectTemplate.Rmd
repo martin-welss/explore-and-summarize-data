@@ -42,32 +42,74 @@ ggplot(aes(x = quality), data = wine) +
 
 ```
 
+We see that the quality is close to a normal distribution which is not fully symmetric because the value for quality 5 is higher than the corresponding value 7. Given that
+the quality ranges from 1 to 10, we see the maximum at 6, which is sightly above
+full mediocrity.
+
 Now the histograms of the potential "input" variables:
 ```{r echo=FALSE}
 ggplot(aes(x = fixed.acidity), data = wine) + 
   geom_histogram()
+```
+
+Nothing special about the histogram for fixed acidity: it resembles a normal distribution with no gaps and the values are in the range between 4 and 11. 
+
+```{r echo=FALSE}
 
 ggplot(aes(x = residual.sugar), data = wine) + 
   geom_histogram()+
   scale_x_log10()
+```
+
+The histogram on residual sugar has some interesting features:
+
++ I scaled the x-axis by log10 to have a tighter view
++ from left to right it has a peak, then a low and then two peaks
++ all three peaks are about the same height
++ it does not resemble any standard distribution I know
+
+```{r echo=FALSE}
 
 ggplot(aes(x = total.sulfur.dioxide), data = wine) + 
   geom_histogram()
+```
+
+The histogram for total sulfur dioxide looks again like a normal distribution, but other than fixed acidity the values have a much greater spectrum and range from 0 to over 300 with some outliers well over 400.
+
+```{r echo=FALSE}
 
 ggplot(aes(x = pH), data = wine) + 
   geom_histogram()
+```
+
+The value range for pH is pretty narrow with most of the values between 3 and 3.5, so all values are chemically well in the acidity range and not alkaline (which is above 7). The distribution resembles a normal distribution with an unusual double peak.
+
+```{r echo=FALSE}
 
 ggplot(aes(x = density), data = subset(wine, density<1.01)) + 
   geom_histogram(binwidth=0.001)
+```
+
+Interesting about the density plot is the narrow value range with most of them
+in the interval between 0.9 and 1.0. The distribution looks like a slightly asymmetrical
+normal distribution.
+
+```{r echo=FALSE}
 
 ggplot(aes(x = sulphates), data = wine) + 
   geom_histogram()
+```
+
+The sulphates distribution has a small tail on the right and a low left of the peak.
+
+```{r echo=FALSE}
 
 ggplot(aes(x = alcohol), data = wine) + 
   geom_histogram()
 
 ```
 
+The alcohol distribution looks interesting because it is asymmetric and starts with a peak count at about 600 on the left and falls sharply down to 200 and then slowly descents to zero with little ups and downs.
 
 I think we can get a better impression of the quality distribution 
 with frequency polygons:
@@ -82,6 +124,7 @@ ggplot(aes(x = quality, y = ..count../sum(..count..)), data = wine) +
 
 ```
 
+Here the frequency polygons confirm the resemblence of a normal distribution.
 
 The distributions of alcohol and quality resemble slightly 
 so alcohol seems to be the best lead. We transform it to be a factor 
@@ -104,13 +147,20 @@ wine <- subset(wine, !is.na(wine$alcohol.bucket))
 # plot it as histogram
 ggplot(aes(x = alcohol.bucket), data = wine) + 
   geom_histogram()
+```
+
+The alcohol bucket histogram underlines the asymmetric outline of the distribution
+with the peak already at interval (9,10] and the decreasing continuously to 
+interval (13,14]
+
+```{r echo=FALSE}
 
 # and boxplot
 qplot(x=alcohol.bucket, y=quality, data=wine, geom='boxplot')
 
-
-
 ```
+
+The boxplot is the first highlight showing a clear relation between alcohol and quality with quality continuously increasing along with the level of alcohol.
 
 # Univariate Analysis
 
@@ -144,14 +194,27 @@ To start, let's create some scatterplots to find interesting correlations...
 
 ggplot(aes(x=quality, y=total.sulfur.dioxide), data=wine) + 
   geom_jitter(alpha=1/6)
+```
 
+I had to apply jitter and alpha to cope with overplotting, but there is no
+clear relation between total sulfur dioxide and quality.
+
+```{r echo=FALSE}
 ggplot(aes(x=quality, y=fixed.acidity), data=wine) + 
   geom_jitter(alpha=1/6)
+```
+
+No clear trend either between fixed acidity and quality.
+
+```{r echo=FALSE}
 
 ggplot(aes(x=quality, y=fixed.acidity*fixed.acidity), data=wine) + 
   geom_jitter(alpha=1/6)+ylim(c(0,120))
 
 ```
+
+The combination of the two acidity attributes just stretches the y-values over
+a greater range compared to fixed acidity alone, but there is still no clear relation visible.
 
 No winner so far, maybe a linear model layer helps
 
@@ -162,7 +225,8 @@ ggplot(aes(x=quality, y=alcohol), data=wine) +
 
 ```
 
-Well, that looks promising let's keep the pair alcohol and quality in mind. 
+Well, that looks promising let's keep the pair alcohol and quality in mind. We can
+see clearly that quality increases with higher levels of alcohol.
 
 Are there correlations of higher order?
 Let's try transformed variables.
@@ -173,6 +237,11 @@ Let's try transformed variables.
 ggplot(aes(x=quality, y=sqrt(pH)), data=wine) + 
   geom_jitter(alpha=1/6)+
   geom_smooth(method='lm', color='red')
+```
+
+Nothing of interest between sqrt(pH) and quality, the line is almost flat.
+
+```{r echo=FALSE}
 
 ggplot(aes(x=quality, y=fixed.acidity*total.sulfur.dioxide), data=wine) + 
   geom_jitter(alpha=1/10)+
@@ -180,6 +249,10 @@ ggplot(aes(x=quality, y=fixed.acidity*total.sulfur.dioxide), data=wine) +
   ylim(c(0,2000))
 
 ```
+
+The smoother line for quality by the product of fixed acidity and total sulfur dioxide
+shows a little slope, but it is far from a convincing correlation. We should 
+nevertheless keep it in mind.
 
 I create a new variable prop.acidity to combine acidity-types and plot it. 
 
@@ -206,10 +279,20 @@ What about correlations between the other variables?
 ggplot(aes(x=alcohol, y=fixed.acidity), data=wine) +
   geom_jitter(alpha=1/8)
   
+```
+
+
+
+```{r echo=FALSE}
 ggplot(aes(x=volatile.acidity, y=fixed.acidity), data=wine) +
   geom_jitter(alpha=1/8)
 
 
+```
+
+
+
+```{r echo=FALSE}
 ggplot(aes(x=pH, y=alcohol), data=wine) +
   geom_jitter(alpha=1/8)
 
