@@ -124,7 +124,7 @@ ggplot(aes(x = quality, y = ..count../sum(..count..)), data = wine) +
 
 ```
 
-Here the frequency polygons confirm the resemblence of a normal distribution.
+Here the frequency polygons confirm the resemblance of a normal distribution.
 
 The distributions of alcohol and quality resemble slightly 
 so alcohol seems to be the best lead. We transform it to be a factor 
@@ -271,6 +271,8 @@ ggplot(aes(x=quality, y=prop.acidity), data=wine) +
 
 ```
 
+The correlation between quality and the combined acidities is visible as the slowly increasing line, but it is not strong enough nor is it better than fixed acidity alone.
+
 What about correlations between the other variables?
 
 ```{r echo=FALSE}
@@ -281,7 +283,8 @@ ggplot(aes(x=alcohol, y=fixed.acidity), data=wine) +
   
 ```
 
-
+We see the values for fixed acidity stay in a range between 5 and 11 with more datapoints
+in the area of lower alcohol. No correlation to see here. 
 
 ```{r echo=FALSE}
 ggplot(aes(x=volatile.acidity, y=fixed.acidity), data=wine) +
@@ -290,13 +293,16 @@ ggplot(aes(x=volatile.acidity, y=fixed.acidity), data=wine) +
 
 ```
 
-
+The scatterplot of the two acidities yields the shape of an egg in the left lower quadrant of the plot. 
 
 ```{r echo=FALSE}
 ggplot(aes(x=pH, y=alcohol), data=wine) +
   geom_jitter(alpha=1/8)
 
 ```
+
+The scatterplot of alcohol and pH results in quite equally distributed points which
+shows no correlation at all.The plot is a little more dense for alcohol values below 10.
 
 We should at least here see a correlation between pH and acidity because
 of the chemical definition of pH.
@@ -310,7 +316,7 @@ ggplot(aes(x=pH, y=fixed.acidity), data=wine) +
 
 ```
 
-We don't get disappointed but that does not help for the prediction of quality.
+We don't get disappointed as we see that fixed acidity decreases with higher pH values but that does not help for the prediction of quality.
 
 # Bivariate Analysis
 
@@ -367,6 +373,11 @@ ggplot(aes(x=quality), data=wine)+
 
 ```
 
+The subplots show clearly how different the counts are regarding the alcohol levels:
+there are only a few (less than 100) datapoints for the highest alcohol level of 13 whereas for the levels of 9 and 10 there are more than 1500 datapoints. But plot
+also confirms the correlation between alcohol and quality as we see the bars wander
+to the right towards better quality with higher alcohol levels.
+
 I think I need quality to be a factor, so create it
 
 ```{r}
@@ -386,13 +397,20 @@ ggplot(aes(x = pH, y = alcohol), data = wine) +
 
 ```
 
+We see here again that the darker points of better quality correspond with higher
+alcohol levels, but pH is equally distributed among quality.
 pH seems to be a dead end, let's try other variables.
 
 ```{r echo=FALSE}
 ggplot(aes(x = fixed.acidity, y = alcohol), data = wine) + 
   geom_point(aes(color = quality.factor))+
   scale_color_brewer(type = "seq")
+```
 
+Same conclusion with fixed acidity: the alcohol-quality relation shows again,
+but fixed acidity has no influence.
+
+```{r echo=FALSE}
 
 ggplot(aes(x = total.sulfur.dioxide, y = alcohol), data = wine) + 
   geom_point(aes(color = quality.factor))+
@@ -400,6 +418,10 @@ ggplot(aes(x = total.sulfur.dioxide, y = alcohol), data = wine) +
 
 
 ```
+
+The plot with total sulfur dioxide finally shows a very small interesting
+deformation where the lighter of low quality datapoints are shifted to the lower right.
+We should keep that in mind.
 
 We compute a new variable of promising candidates and create a corresponding plot.
 
@@ -410,6 +432,10 @@ wine$qmix <- wine$alcohol*
   wine$fixed.acidity
 
 ```
+
+The new qmix variable is quite uniformly distributed around the center of the plot,
+so no new revelations here.
+
 ```{r echo=FALSE}
 
 
