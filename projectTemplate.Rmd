@@ -6,12 +6,6 @@ of objective, mostly chemical tests and quality variable which is based on senso
 data (median of at least 3 evaluations made by wine experts).
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, packages}
-# Load all of the packages that you end up using
-# in your analysis in this code chunk.
-
-# Notice that the parameter "echo" was set to FALSE for this code chunk.
-# This prevents the code from displaying in the knitted HTML output.
-# You should set echo=FALSE for all code chunks in your file.
 
 library(ggplot2)
 ```
